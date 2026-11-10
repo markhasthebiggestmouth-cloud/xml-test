@@ -1,27 +1,14 @@
-name: Process XML File
+name: Interactive Remote Runner
 
 "on": [push]
 
 jobs:
-  run:
+  remote-control:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Start Live Web Terminal
+        uses: mxschmitt/action-tmate@v3
         with:
-          node-version: '20'
-
-      - run: npm install fast-xml-parser
-
-      - run: |
-          node -e "
-          const fs = require('fs');
-          const { XMLParser } = require('fast-xml-parser');
-          const xml = fs.readFileSync('data.xml', 'utf8');
-          const parser = new XMLParser();
-          const data = parser.parse(xml);
-          console.log('--- SUCCESS ---');
-          console.log('Status:', data.project.status);
-          console.log('Message:', data.project.message);
-          "
+          detached: true
