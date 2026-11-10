@@ -1,0 +1,27 @@
+name: Process XML File
+
+"on": [push]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install fast-xml-parser
+
+      - run: |
+          node -e "
+          const fs = require('fs');
+          const { XMLParser } = require('fast-xml-parser');
+          const xml = fs.readFileSync('data.xml', 'utf8');
+          const parser = new XMLParser();
+          const data = parser.parse(xml);
+          console.log('--- SUCCESS ---');
+          console.log('Status:', data.project.status);
+          console.log('Message:', data.project.message);
+          "
